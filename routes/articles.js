@@ -118,6 +118,11 @@ const data = [
       "Irure aliqua ut cupidatat do est eu id consequat et quis commodo ullamco. Duis nisi ipsum veniam id magna. Aliqua laboris laborum nisi consequat aute consectetur eiusmod ut occaecat elit reprehenderit fugiat labore cillum.\n\nAnim sint eu amet eiusmod amet eu laborum in excepteur et. Lorem eu duis magna ipsum ea id ipsum tempor. Commodo excepteur qui duis elit aliqua eiusmod. Eu qui ipsum ullamco veniam adipisicing consectetur ullamco occaecat nostrud deserunt duis aliquip cillum Lorem.\n\nCulpa Lorem aliquip sunt consectetur aliqua sunt nostrud proident in dolore dolor. Id irure ad do commodo deserunt irure dolor nisi sint ipsum. Eu ut ut Lorem mollit sint anim consectetur nostrud. Nisi magna anim eu pariatur eu ea aliquip aute aliquip. Est velit deserunt incididunt ad nisi magna tempor non sunt in sit.",
   },
 ];
+////////////
+
+
+
+
 
 router.get("", (req, res) => {
   console.log("Get request for all articles received...");
@@ -132,32 +137,52 @@ router.post("", (req, res) => {
   console.log(`Post request received...`);
   console.log(req.body);
   const article = new Article(req.body);
-  article.save().then((article) => {
-    res.send(article);
+  article.save().then((result) => {
+    return res.status(201).send(result);
   });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   const id = req.params.id;
   console.log(`get request for article ${id} received...`);
 
   Article.findById(id).then(function (article) {
     if (!article) {
-      res.sendStatus(404);
+      const error = new Error("Article not Found");
+      next(error);
     } else {
-      res.send(article);
+      return res.send(article);
     }
   });
 });
 
-// router.put("/:id", (req, res) => {
-//   const id = req.params.id;
-//   console.log(`Update request for article ${id} received...`);
-// });
+router.put("/:id", (req, res, next) => {
+  const id = req.params.id;
+  console.log(`Update request for article ${id} received...`);
 
-// router.delete("/:id", (req, res) => {
-//   const id = req.params.id;
-//   console.log(`Delete request for article ${id} received...`);
-// });
+  // Article.findByIdAndUpdate(id, req.body, {new: true}).then((article) => {
+
+  Article.findByIdAndUpdate(id, req.body).then((article) => {
+    if (!article) {
+      const error = new Error("Article not Found");
+      next(error);
+    } else {
+      return res.send(article);
+    }
+  });
+});
+
+router.delete("/:id", (req, res, next) => {
+  const id = req.params.id;
+  console.log(`Delete request for article ${id} received...`);
+  Article.findByIdAndDelete(id).then((article) => {
+    if (!article) {
+      const error = new Error("Article not Found");
+      next(error);
+    } else {
+      return res.send(article);
+    }
+  });
+});
 
 module.exports = router;
