@@ -42,13 +42,23 @@ app.get("/", (req, res) => {
 // this middleware uses the express router to handle all requests to the articles section of the api
 // the router is required into the scope and added to the middleware as the callback for that route, and all the endpoints in that particular router will handle any further url segments such as id etc
 const articles = require("./routes/articles.js");
+const users = require("./routes/users.js");
 app.use("/articles", articles);
+app.use("/users", users);
 
 // ERRORS ----------------------------------------------------------------
 // any request or response errors will be handled and displayed here
 
 // development error handler
 // will print stacktrace
+
+app.use((req, res, next) => {
+  const error = new Error("Not Found");
+  error.status = 404;
+  next(error)
+});
+
+
 app.use((err, req, res, next) => {
   if (!isProduction) {
     console.log(err.stack);
