@@ -11,11 +11,15 @@ const UserSchema = new mongoose.Schema(
         email: {
             type: String,
             lowercase: true,
-            // unique: true,
+            unique: true,
             required: [true, "email address is required"],
-            match: [ /\s+@\s+\.\s+/, "not a valid email adress"],
-            // index: true
+            match: [/\S+@\S+\.\S+/, "not a valid email adress"],
+            index: true
         },
+        articles: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Article"
+        }]
     },
     { timestamps: true}
 );

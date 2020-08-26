@@ -3,6 +3,8 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const morgan = require('morgan');
+
 dotenv.config();
 
 const isProduction = false;
@@ -32,6 +34,8 @@ mongoose.connection.on("open", function (ref) {
 });
 
 // ROUTING ----------------------------------------------------------------
+
+app.use(morgan('dev'));
 
 // this endpoint is if someone visits the root address (http://localhost:3000)
 app.get("/", (req, res) => {

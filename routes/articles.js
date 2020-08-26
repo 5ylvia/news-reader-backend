@@ -1,15 +1,17 @@
 const router = require("express").Router();
-const Article = require("../models/Article");
+const Article = require("../models/Article.js");
 
 
 router.param("id", (req, res, next, id) => {
-  Article.findById(id).then((article) => {
-    if (!article) {
-      res.status(404).send("Article is not found!!")
-    } else {
-      req.article = article;
-      return next();
-    }  
+  Article.findById(id)
+  .populate("author")
+  .then((article) => {
+      if (!article) {
+        res.status(404).send("Article is not found!!")
+      } else {
+        req.article = article;
+        return next();
+      }  
   }).catch(next);
 })
 
