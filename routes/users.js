@@ -58,7 +58,7 @@ router.delete("/:id", (req, res, next) => {
 // User's Articles
 
 router.get("/:id/articles", (req, res, next) => {
-    Article.find({ createdAt: "desc" })
+    Article.find({ author: req.user.id })
     .sort({createdAt: "desc"})
     .then((articles) => {
         return res.status(200).send(articles)
@@ -78,6 +78,15 @@ router.post("/:id/articles", (req, res, next) => {
         }).catch(next);
     }).catch(next);
 })
+
+router.put("/:id/articles/edit", (req, res, next) => {
+    Article.findByIdAndUpdate(req.article.id, req.body)
+    .find({ author: req.user.id })
+    .sort({createdAt: "desc"})
+    .then((article) => {
+      res.status(200).send(article);
+    }).catch(next);
+  });
 
 
 // Auth
