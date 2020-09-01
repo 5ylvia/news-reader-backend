@@ -3,9 +3,7 @@ const express = require("express");
 
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const morgan = require('morgan');
-
-dotenv.config();
+const morgan = require("morgan");
 
 const isProduction = false;
 // create a new instance of the express object and store it
@@ -35,12 +33,12 @@ mongoose.connection.on("open", function (ref) {
 
 // ROUTING ----------------------------------------------------------------
 
-app.use(morgan('dev'));
+app.use(morgan("dev"));
 
 // this endpoint is if someone visits the root address (http://localhost:3000)
 app.get("/", (req, res) => {
   console.log(`${req.method} request received...`);
-  res.send("Hello");
+  res.send("Hello, welcome to the articles api!");
 });
 
 // this middleware uses the express router to handle all requests to the articles section of the api
@@ -54,14 +52,13 @@ app.use("/users", users);
 // any request or response errors will be handled and displayed here
 
 // development error handler
-// will print stacktrace
+// will print stacktrace not in prod
 
 app.use((req, res, next) => {
-  const error = new Error("Not Found");
+  const error = new Error("Endpoint Not Found");
   error.status = 404;
-  next(error)
+  next(error);
 });
-
 
 app.use((err, req, res, next) => {
   if (!isProduction) {
@@ -71,9 +68,9 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500);
 
   res.json({
-    'errors': {
-    message: err.message,
-    error: err
-    }
+    errors: {
+      message: err.message,
+      error: err,
+    },
   });
 });
